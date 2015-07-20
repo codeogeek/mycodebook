@@ -1,0 +1,45 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Net;
+using System.Net.Sockets;
+namespace Server
+{
+    class Program
+    {
+        static byte[] Buffer { get; set; }
+        //
+        static Socket s;
+        static void Main(string[] args)
+        {
+            s = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            
+            s.Bind(new IPEndPoint(0,1234));
+            //bind socket to certain endpoint
+            s.Listen(100);
+
+            Socket accepted = s.Accept();
+            //blocking call and wait for an available socket that attempts to connect and will transfer socket over this variable
+            
+            Buffer = new byte[accepted.SendBufferSize];
+            //the default buffer size is 8192...no. of bytes that can be recieved at one time
+            
+            int bytes = accepted.Receive(Buffer);
+            //recieve ...wait for a buffer .. recieve it and transfer to buffer variable.. returns bytes that read
+            
+            byte[] formatted = new byte[bytes];
+            //format the buffer to free the buffer
+            for (int i = 0; i < bytes; i++)
+            {
+                formatted[i] = Buffer[i];
+            }
+            string strdata = Encoding.ASCII.GetString(formatted);
+            Console.WriteLine(strdata);
+            Console.Read();
+            s.Close();
+            accepted.Close();
+        }
+    }
+}
