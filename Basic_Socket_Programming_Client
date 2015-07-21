@@ -10,7 +10,7 @@ namespace Server
     class Program
     {
         static byte[] Buffer { get; set; }
-        //
+        //buffer is initialized
         static Socket s;
         static void Main(string[] args)
         {
